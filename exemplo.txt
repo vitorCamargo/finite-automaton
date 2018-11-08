@@ -1,0 +1,13 @@
+1 0
+e
+a b c t
+a
+c
+a 0 b
+a 1 t
+b 0 b
+b 1 c
+c 1 c
+c 0 t
+t 0 t
+t 1 t

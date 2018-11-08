@@ -1,37 +1,54 @@
-# Preenche tapes com valores do arquivo
-def get_tapes(tapes, config):
-    valide_value = config[1]
-    valide_value = valide_value + config[3]
-    for i in tapes:
+# Linha 1: alfabeto de entrada
+# Linha 2: simbolo a ser considerado para representar epsilon ou lambda (nao deve pertencer ao alfabeto de entrada)
+# Lista 3: conjunto de estados
+# Linha 4: estado inicial
+# Linha 5: conjunto de estados de aceitacao
+# Linhas 6 em diante: transicoes, uma por linha, cada qual no seguinte formato: estado atual, simbolo do alfabeto de entrada ou epsilon, estado destino
+
+# return -1 = computação termianda e não aceita
+# return -2 = computação interrompida por loop
+# return -3 = palavra com alfabeto fora do esperado
+
+# Preenche word com valores do arquivo
+def valid_word(word, config):
+    valide_value = config[1] + config[2]
+
+    for i in word:
         if i not in valide_value:
             print ("-3: Valor inserido na fita incorreto")
             return -3
-    return tapes
+        
+    # Remove epsilons da palavra
+    i = 0
+    while (i < len(word)):
+        if (word[i] == config[2][0]):
+            word = word[:i] + word[i + 1:]
+            i -= 1
+        i += 1
 
-def machine(config, tapes, transitions):
+    return word
+
+def machine(config, word, transitions):
     # Cria fila para controle do fluxo
     q = []
-    tape = get_tapes(tapes, config)
-
-    if (tape == -1): # Valores inválidos na fita
-        return -1
+    word = valid_word(word, config)
+    print(word)
+    if (word == -3): # Valores inválidos na palavra
+        return -3
     
     # Configurações da máquina
     setting = {
-        "tape": tape,
-        "current_state": config[5][0],
-        "head_tape": 0,
+        "current_state": config[4][0],
+        "head_word": 0,
         "counter": 5000 # Contador que 'verifica' looping
     }
     
     # Insere elemento no final da fila
     q.append(setting)
 
-    while True:
-        tape = setting['tape']
-        
+    while True:        
         # Encontrou estado final
-        if (q[0]['current_state'] in config[6]):
+        if ((q[0]['current_state'] in config[5]) and (q[0]['head_word'] == len(word))):
             print ("0: Computação terminada e aceita.")
             print (setting)
             return 0
@@ -50,43 +67,29 @@ def machine(config, tapes, transitions):
                     q[0]['counter'] = 5000
                     break
 
-        # Pega posição da fita na configuração atual
-        head = q[0]['head_tape']
+        # Pega posição da palavra na configuração atual
+        head = q[0]['head_word']
 
         # Encontra transições possíveis
-        for i in range(1, len(transitions) + 1, 1):
-            # Se estado_atual_maquina == estado_atual_fita e letra_fita == letra_transicao
-            if ((q[0]['current_state'] == transitions[i][0]) and (tape[head] == transitions[i][2])):
-                # Nova disposição da fita
-                new_tape = tape
-                # -> Troca letra_fita por nova_letra_transicao
-                if (head > 0):
-                    new_tape = (tape[0:head] + transitions[i][3]) + tape[head + 1:]
-                else:
-                    new_tape = transitions[i][3] + tape[head + 1:]
-
+        for i in range(1, len(transitions) + 1):
+            # Se estado_atual_maquina == estado_atual_fita e (simbolo_atual == epslon ou simbolo_atual == simbolo_transicao)
+            if ((transitions[i][1] != config[2][0]) and (len(word) <= q[0]['head_word'])):
+                print ('errou')
+                break
+            elif ((q[0]['current_state'] == transitions[i][0]) and
+                ((transitions[i][1] == config[2][0]) or (word[head] == transitions[i][1]))):
+            
+                print(transitions[i])
                 # Nova posição da head da fita
-                new_head_tape = head
-                if (transitions[i][4] == 'R'):
-                    # Adiciona espaço em branco no final da tape
-                    if (new_head_tape == len(new_tape) - 1):
-                        new_tape = (new_tape) + config[3][0]
-                    
-                    new_head_tape = new_head_tape + 1 # Moveu para direita
-                elif (transitions[i][4] == 'L'):
-                    # Adiciona espaço em branco no início da tape
-                    if (new_head_tape == 0):
-                        new_tape = config[3][0] + (new_tape)
-                        new_head_tape += 1
-                    
-                    new_head_tape = new_head_tape - 1 # Moveu para esquerda
-                else:
-                    new_head_tape = new_head_tape # Mantêm na mesma posição
+                new_head_word = head
+
+                # Se transição é diferente de epsilon, vai para próximo símbolo
+                if ((transitions[i][1] != config[2][0]) or (word[head] == config[2][0])):
+                    new_head_word += 1 # Moveu para direita
 
                 new_setting = {
-                    "tape": new_tape,
-                    "current_state": transitions[i][1],
-                    "head_tape": new_head_tape,
+                    "current_state": transitions[i][2],
+                    "head_word": new_head_word,
                     "counter": q[0]['counter'] - 1
                 }
 
@@ -99,9 +102,8 @@ def machine(config, tapes, transitions):
             return -1
         
         # Configura máquina para próximo estado
-        setting['tape'] = q[1]['tape']
         setting['current_state'] = q[1]['current_state']
-        setting['head_tape'] = q[1]['head_tape']
+        setting['head_word'] = q[1]['head_word']
         setting['counter'] = q[1]['counter']
         q.pop(0) # Tira estado atual da fila
 
