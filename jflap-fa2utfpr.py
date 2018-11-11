@@ -48,10 +48,15 @@ class Jflap2Utfpr(object):
 		xmldoc = ET.parse(inputFile)
 		root = xmldoc.getroot()
 		tm = root.find('automaton')
+		if tm == None:  # Old JFLAP format
+			tm = root
 
 		for s in tm.findall('state'):
 			state_id = s.attrib['id']
-			state_name = s.attrib['name']
+			if s.attrib.has_key('name'):
+				state_name = s.attrib['name']
+			else:
+				state_name = str(state_id)
 			self.state_id_to_name[state_id] = state_name
 			self.states.add(state_name)
 			if s.find('initial') is not None:

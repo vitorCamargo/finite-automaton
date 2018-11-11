@@ -1,8 +1,8 @@
 # Linha 1: alfabeto de entrada
-# Linha 2: simbolo a ser considerado para representar epsilon ou lambda (nao deve pertencer ao alfabeto de entrada)
+# Linha 2: simbolo a ser considerado para representar epsilon ou lambda (não deve pertencer ao alfabeto de entrada)
 # Lista 3: conjunto de estados
 # Linha 4: estado inicial
-# Linha 5: conjunto de estados de aceitacao
+# Linha 5: conjunto de estados de aceitação
 # Linhas 6 em diante: transicoes, uma por linha, cada qual no seguinte formato: estado atual, simbolo do alfabeto de entrada ou epsilon, estado destino
 
 # return -1 = computação termianda e não aceita
@@ -15,7 +15,7 @@ def valid_word(word, config):
 
     for i in word:
         if i not in valide_value:
-            print ("-3: Valor inserido na fita incorreto")
+            print ("-3: Valor inserido na palavra incorreto")
             return -3
         
     # Remove epsilons da palavra
@@ -32,7 +32,7 @@ def machine(config, word, transitions):
     # Cria fila para controle do fluxo
     q = []
     word = valid_word(word, config)
-    print(word)
+    
     if (word == -3): # Valores inválidos na palavra
         return -3
     
@@ -72,18 +72,16 @@ def machine(config, word, transitions):
 
         # Encontra transições possíveis
         for i in range(1, len(transitions) + 1):
-            # Se estado_atual_maquina == estado_atual_fita e (simbolo_atual == epslon ou simbolo_atual == simbolo_transicao)
+            # Se estado_atual_maquina == estado_atual_fita e (simbolo_atual == ε ou simbolo_atual == simbolo_transicao)
             if ((transitions[i][1] != config[2][0]) and (len(word) <= q[0]['head_word'])):
-                print ('errou')
                 break
             elif ((q[0]['current_state'] == transitions[i][0]) and
                 ((transitions[i][1] == config[2][0]) or (word[head] == transitions[i][1]))):
-            
-                print(transitions[i])
+
                 # Nova posição da head da fita
                 new_head_word = head
 
-                # Se transição é diferente de epsilon, vai para próximo símbolo
+                # Se transição é diferente de ε, vai para próximo símbolo
                 if ((transitions[i][1] != config[2][0]) or (word[head] == config[2][0])):
                     new_head_word += 1 # Moveu para direita
 
@@ -106,4 +104,3 @@ def machine(config, word, transitions):
         setting['head_word'] = q[1]['head_word']
         setting['counter'] = q[1]['counter']
         q.pop(0) # Tira estado atual da fila
-
