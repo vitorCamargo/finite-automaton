@@ -26,10 +26,15 @@ Embora não tivesse sido obrigado tratar *looping*, o software está programado 
 
 ### Variáveis *config = {}*
 Durante a execução do programa foi armazenado a configuração do autômato na variável *config*, em que as informações estão armazenadas da seguinte forma:
+
 config\[1]: alfabeto de entrada
+
 config\[2]: símbolo a ser considerado para representar epsilon ou lambda (não deve pertencer ao alfabeto de entrada)
+
 config\[3]: conjunto de estados
+
 config\[4]: estado inicial
+
 config\[5]: conjunto de estados de aceitação
 	
 ### Como executar
