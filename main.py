@@ -1,5 +1,5 @@
 import sys
-import finiteAutomaton
+import finite_automaton
 
 def read_file():
     aux = 0
@@ -26,6 +26,6 @@ def main():
     if(len(sys.argv) > 2):
         word = sys.argv[2]
     
-    finiteAutomaton.machine(config, word, transitions)
+    finite_automaton.machine(config, word, transitions)
 
 main()
