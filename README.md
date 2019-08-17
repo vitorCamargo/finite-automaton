@@ -54,8 +54,11 @@ config\[5]: acceptance state set.
   Where, *'current_state'* indicates the state in which the automaton is at the end of execution and *'head_word'* indicates the position of the word consumed so far and *'counter'* the descending counter that checks a possible *looping*.
   
   In addition, at the exit of the program there will be a line indicating the final result of the automaton execution, which can be:
+  
   `0: Computing done and accepted.`
+  
   `-1: Computation terminated and rejected.`
+  
   `-3: Value entered in word is incorrect.`
 
   **Output Example:**  
